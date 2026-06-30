@@ -1,7 +1,7 @@
-"""Local evaluation server for the YC co-founder filter extension.
+"""Local backend for the Adbo-Engine browser extension.
 
-The browser extension scrapes each candidate profile and POSTs it here;
-this server runs the OpenAI evaluation, applies the keep/skip rule, and
-appends matches to an Excel file. Keeping the key and the file I/O on the
-server side is what lets the (sandboxed, secret-less) extension stay thin.
+The nav-extension drives the redirect loop and the sign-up funnel in the
+browser; this server supplies the data it enters (random identities and
+registration details). Keeping that generation server-side lets the
+(sandboxed) extension stay thin.
 """

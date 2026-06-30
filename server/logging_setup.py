@@ -1,4 +1,4 @@
-"""Centralised logging: rotating file at logs/yc-filter.log + stderr.
+"""Centralised logging: rotating file at logs/adbo-engine.log + stderr.
 
 Use `get_logger(__name__)` from any server module.
 """
@@ -11,7 +11,7 @@ from pathlib import Path
 
 LOG_DIR = Path(__file__).resolve().parents[1] / "logs"
 LOG_DIR.mkdir(exist_ok=True)
-LOG_FILE = LOG_DIR / "yc-filter.log"
+LOG_FILE = LOG_DIR / "adbo-engine.log"
 
 _configured = False
 
@@ -21,7 +21,7 @@ def _configure() -> None:
     if _configured:
         return
 
-    root = logging.getLogger("yceng")
+    root = logging.getLogger("adbo")
     root.setLevel(logging.DEBUG)
     root.propagate = False
 
@@ -42,6 +42,6 @@ def _configure() -> None:
 
 def get_logger(name: str) -> logging.Logger:
     _configure()
-    if not name.startswith("yceng"):
-        name = f"yceng.{name}"
+    if not name.startswith("adbo"):
+        name = f"adbo.{name}"
     return logging.getLogger(name)

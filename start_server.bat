@@ -1,6 +1,6 @@
 @echo off
 REM ============================================================
-REM  Start the YC Co-Founder Filter server in the project venv.
+REM  Start the Adbo-Engine server in the project venv.
 REM  Double-click this file (no VS Code / no activation needed).
 REM ============================================================
 setlocal

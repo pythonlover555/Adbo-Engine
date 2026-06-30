@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "YC Scout",
+  "version": "0.7.0",
+  "description": "Scouts cofounder-matching profiles and surfaces the ones worth your time.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": ["storage", "activeTab", "scripting"],
+  "host_permissions": [
+    "https://www.startupschool.org/*",
+    "http://localhost:8791/*",
+    "http://127.0.0.1:8791/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "YC Scout",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.startupschool.org/cofounder-matching/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

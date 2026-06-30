@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      :root {
+        --brand: #7c3aed;        /* violet-600 */
+        --brand-dark: #6d28d9;   /* violet-700 */
+        --ink: #1e1b2e;
+        --muted: #6b6780;
+        --line: #ece9f5;
+        --ok: #7c3aed;
+        --warn: #f59e0b;
+        --bad: #64748b;
+      }
+      body {
+        font: 13px -apple-system, "Segoe UI", system-ui, sans-serif;
+        width: 268px; margin: 0; padding: 16px;
+        color: var(--ink); background: #faf9fe;
+      }
+      header { display: flex; align-items: center; gap: 9px; margin-bottom: 14px; }
+      .logo {
+        width: 28px; height: 28px; border-radius: 8px; flex: none;
+        background: linear-gradient(160deg, #8b5cf6, var(--brand-dark));
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 2px 6px rgba(124, 58, 237, 0.35);
+      }
+      h1 { font-size: 15px; font-weight: 700; margin: 0; letter-spacing: -0.2px; }
+      .sub { font-size: 10px; color: var(--muted); margin-top: 1px; }
+      button {
+        width: 100%; padding: 10px; font-size: 13px; font-weight: 600;
+        border: 0; border-radius: 9px; cursor: pointer; margin-bottom: 8px;
+        transition: filter 0.12s, transform 0.05s;
+      }
+      button:hover { filter: brightness(1.05); }
+      button:active { transform: translateY(1px); }
+      #start { background: linear-gradient(160deg, #8b5cf6, var(--brand-dark)); color: #fff; }
+      #stop  { background: #ece9f5; color: var(--brand-dark); }
+      .card {
+        background: #fff; border: 1px solid var(--line); border-radius: 11px;
+        padding: 4px 12px; margin-top: 4px;
+      }
+      .row { display: flex; justify-content: space-between; align-items: center;
+             padding: 7px 0; color: var(--muted); }
+      .row + .row { border-top: 1px solid var(--line); }
+      .row b { color: var(--ink); font-weight: 600; }
+      .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 7px; }
+      .ok { background: var(--ok); } .bad { background: var(--bad); } .idle { background: #c9c5d8; }
+      .hint { color: var(--muted); font-size: 11px; margin-top: 12px; line-height: 1.45; }
+      code { background: var(--line); padding: 1px 5px; border-radius: 4px; font-size: 10.5px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <span class="logo">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+             stroke="#fff" stroke-width="2.4" stroke-linecap="round">
+          <circle cx="10.5" cy="10.5" r="6.5" />
+          <line x1="15.5" y1="15.5" x2="21" y2="21" />
+        </svg>
+      </span>
+      <div>
+        <h1>YC Scout</h1>
+        <div class="sub">Cofounder profile triage</div>
+      </div>
+    </header>
+
+    <button id="start">Start scouting</button>
+    <button id="stop">Stop</button>
+
+    <div class="card">
+      <div class="row"><span><span id="srvDot" class="dot idle"></span>Server</span><b id="srvText">checking…</b></div>
+      <div class="row"><span>Matches saved</span><b id="matches">–</b></div>
+      <div class="row"><span>Region gate</span><b id="regions">–</b></div>
+      <div class="row"><span>Version</span><b id="version">–</b></div>
+    </div>
+
+    <div class="hint">Open a profile on the Discover page, then Start. Non-matches are skipped automatically; the run stops on a match. Results go to <code>data/matches.xlsx</code>.</div>
+    <script src="popup.js"></script>
+  </body>
+</html>

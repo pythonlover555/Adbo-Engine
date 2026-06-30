@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Env / secrets
+.env
+
+# Output data
+data/*.json
+data/*.csv
+data/*.xlsx
+
+# Logs (including rotated files like yc-filter.log.1)
+*.log
+*.log.*
+logs/
+
+# Editor / tool temp sidecars (atomic-write leftovers)
+*.tmp.*
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

@@ -42,7 +42,14 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 // Random delay in [min, max] ms. Used to space actions out so the funnel sees
 // human-like pacing instead of instant, bot-shaped fills/clicks.
 const rand = (min, max) => min + Math.random() * (max - min);
-const humanPause = (min = 500, max = 1400) => sleep(rand(min, max));
+
+// The standard interval BEFORE each human action (fill a field, answer a
+// question, click a button): a random 1–5 seconds, like a real person. Call it
+// with no args. (Sub-action timing like per-keystroke typing uses sleep()/rand
+// directly with shorter values — that's typing speed, not an action interval.)
+const ACTION_MIN_MS = 1000;
+const ACTION_MAX_MS = 5000;
+const humanPause = (min = ACTION_MIN_MS, max = ACTION_MAX_MS) => sleep(rand(min, max));
 
 function log(...args) {
   console.log("[cond-nav]", ...args);
@@ -208,7 +215,7 @@ async function fillField(id, value, { overwrite = false } = {}) {
   const current = (el.value || "").trim();
   if (current === String(value).trim()) return; // already exactly right
   if (current && !overwrite) return; // populated and we're not overwriting
-  await humanPause(300, 900);
+  await humanPause();
   if (current) clearInput(el); // remove the pre-filled "original" first
   await typeInto(el, String(value));
   log(`filled #${id} = ${value}${current ? ` (was "${current}")` : ""}`);
@@ -226,7 +233,7 @@ async function selectField(id, value) {
     log(`#${id}: no option for "${value}"`);
     return;
   }
-  await humanPause(300, 900);
+  await humanPause();
   sel.focus();
   setNativeValue(sel, opt.value); // native setter + input event
   sel.dispatchEvent(new Event("change", { bubbles: true }));
@@ -240,7 +247,7 @@ async function selectField(id, value) {
 async function chooseGender(gender) {
   const female = gender === "F" || /female/i.test(gender || "");
   const tile = document.getElementById(female ? "female" : "male");
-  await humanPause(400, 1000);
+  await humanPause();
   if (tile) {
     clickElement(tile);
     log(`clicked gender ${female ? "Female" : "Male"}`);
@@ -269,11 +276,11 @@ async function emailStep() {
     return true;
   }
 
-  await humanPause(600, 1500); // pause before starting to type, as a person would
+  await humanPause(); // 1–5s before starting to type, as a person would
   await typeInto(input, identity.email);
   log(`typed email ${identity.email} (${identity.full_name})`);
 
-  await humanPause(700, 1600); // read-over pause between typing and clicking
+  await humanPause(); // read-over pause between typing and clicking
   // Scope the Continue to the email's own box (.cta-box / #cid-main-container,
   // which contain BOTH the input and the button) so we click THIS form's button,
   // not some other .cid-btns on the page.
@@ -337,7 +344,7 @@ async function registrationStep() {
   await selectField("dobyear", details.dob?.year);
   await chooseGender(details.gender);
 
-  await humanPause(800, 1700); // review pause before submitting
+  await humanPause(); // review pause before submitting
   // Submit is the specific #sub-btn; only if that's missing fall back to a
   // Continue control SCOPED to this form (never a button elsewhere on the page).
   const submit = document.getElementById("sub-btn") || findContinue(root);
@@ -522,7 +529,7 @@ async function answerSurveyQuestion(block) {
 async function answerSingleSelect(block, qText, options) {
   const choice = chooseAnswer(block, qText, options);
   if (!choice) return false;
-  await humanPause(600, 1500); // read the question before answering
+  await humanPause(); // read the question before answering
   selectOption(choice);
   log(`survey: "${trunc(qText)}" -> "${choice.label}"`);
   return true;
@@ -538,13 +545,13 @@ async function answerMultiSelect(block, qText, options) {
   const picked = shuffle(choices).slice(0, k);
 
   for (const opt of picked) {
-    await humanPause(400, 1100);
+    await humanPause();
     selectOption(opt);
   }
   log(`survey (multi): "${trunc(qText)}" -> ${picked.map((p) => p.label).join(", ")}`);
 
   // Submit the multi-select (Done/Submit). Auto-advancing ones won't have one.
-  await humanPause(600, 1300);
+  await humanPause();
   const submit = findMultiSubmit(block);
   if (submit) {
     clickElement(submit);
@@ -586,7 +593,9 @@ async function surveyStep() {
     if (!block) break; // no more questions appeared
     await answerSurveyQuestion(block);
     answered++;
-    await humanPause(600, 1400); // let the page advance / reveal the next
+    // No extra pause here: the per-question 1–5s interval is the pause INSIDE
+    // answerSurveyQuestion (before the click), and the loop top waits for the
+    // next question to be revealed.
   }
   if (!answered) {
     flag("survey page detected but no answerable question was found");
@@ -597,7 +606,7 @@ async function surveyStep() {
   // (auto-advancing ones simply won't have one — clicking nothing is fine).
   const next = findAdvanceButton();
   if (next) {
-    await humanPause(500, 1200);
+    await humanPause();
     clickElement(next);
     log("survey: clicked", (next.textContent || "advance").trim());
   }
@@ -653,14 +662,14 @@ async function tcpaConfirmStep() {
     document.getElementById("leadid_tcpa_disclosure_b") ||
     document.querySelector("#confirmbox input[type=checkbox], input.cb[type=checkbox]");
   if (agree) {
-    await humanPause(700, 1500);
+    await humanPause();
     setChecked(agree);
     log("tcpa: checked I Agree");
   } else {
     flag("tcpa: 'I Agree' checkbox not found — clicking Continue anyway");
   }
 
-  await humanPause(800, 1700);
+  await humanPause();
   clickElement(submit); // its inline onclick runs survey.submit()
   log("tcpa: clicked Continue");
   return true;
@@ -682,7 +691,7 @@ async function ctaYesStep() {
   if (main.dataset.condNavDone === "1") return true;
   main.dataset.condNavDone = "1";
 
-  await humanPause(700, 1600);
+  await humanPause();
   clickElement(yes); // inline onclick runs showEmPop()
   log("cta: clicked Yes!");
   return true;

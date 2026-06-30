@@ -21,7 +21,7 @@ from .logging_setup import get_logger
 
 # Project version. Format x.x.x.x; bump the last segment per release
 # (1.0.0.0 -> 1.0.0.1 -> ...). Keep in sync with nav-extension/manifest.json.
-VERSION = "1.0.0.9"
+VERSION = "1.0.0.10"
 
 log = get_logger("main")
 

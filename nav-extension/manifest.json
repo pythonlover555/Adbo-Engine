@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Conditional Navigation",
-  "version": "1.0.0.9",
+  "version": "1.0.0.10",
   "description": "Drives a tab through a redirect loop until the target landing page is reached, then scrapes it.",
   "icons": {
     "16": "icons/icon16.png",

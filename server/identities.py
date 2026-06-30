@@ -124,7 +124,7 @@ def random_details() -> dict[str, Any]:
         "dob": {
             "month": f"{random.randint(1, 12):02d}",  # "01".."12"
             "day": f"{random.randint(1, 28):02d}",    # "01".."28" (always valid)
-            "year": str(random.randint(1950, 2002)),  # adult age range
+            "year": str(random.randint(1980, 2002)),  # adult age range
         },
         "gender": random.choice(["M", "F"]),
     }
